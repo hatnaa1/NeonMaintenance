@@ -1,6 +1,7 @@
-import { Loader2, Clock } from "lucide-react";
+import { Loader2, Clock, Mail, Check, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { SiGithub, SiDiscord, SiX } from "react-icons/si";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function MaintenancePage() {
   const particles = Array.from({ length: 20 }, (_, i) => ({
@@ -19,6 +20,11 @@ export default function MaintenancePage() {
     minutes: 0,
     seconds: 0,
   });
+
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -43,6 +49,38 @@ export default function MaintenancePage() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+    setErrorMessage("");
+
+    try {
+      const response = await apiRequest("POST", "/api/subscribe", { email });
+      const data = await response.json();
+      
+      if (data.success) {
+        setSubmitStatus("success");
+        setEmail("");
+      } else {
+        setSubmitStatus("error");
+        setErrorMessage(data.message || "Failed to subscribe. Please try again.");
+      }
+    } catch (error: any) {
+      setSubmitStatus("error");
+      const errorText = error.message || "Failed to subscribe. Please try again.";
+      if (errorText.includes("409")) {
+        setErrorMessage("This email address is already registered for notifications.");
+      } else if (errorText.includes("400")) {
+        setErrorMessage("Please enter a valid email address.");
+      } else {
+        setErrorMessage(errorText);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div 
@@ -340,8 +378,162 @@ export default function MaintenancePage() {
             Our team is working hard to bring you an improved experience
           </p>
 
+          {/* Email Notification Signup Form */}
+          <div className="w-full max-w-md mt-8" data-testid="email-signup">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Mail 
+                  className="w-5 h-5"
+                  style={{
+                    color: '#ff006e',
+                    filter: 'drop-shadow(0 0 8px rgba(255, 0, 110, 0.6))',
+                  }}
+                />
+                <span
+                  className="text-xs md:text-sm font-medium tracking-widest uppercase"
+                  style={{
+                    color: '#94a3b8',
+                    textShadow: '0 0 10px rgba(148, 163, 184, 0.5)',
+                  }}
+                >
+                  Get Notified When We're Back
+                </span>
+              </div>
+
+              <form onSubmit={handleEmailSubmit} className="w-full">
+                <div className="flex flex-col gap-3">
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                      disabled={isSubmitting || submitStatus === "success"}
+                      className="w-full px-4 py-3 md:px-6 md:py-4 rounded-2xl text-base md:text-lg font-light outline-none transition-all duration-300"
+                      style={{
+                        background: 'rgba(15, 23, 42, 0.6)',
+                        border: submitStatus === "error" 
+                          ? '2px solid rgba(255, 0, 110, 0.5)' 
+                          : '2px solid rgba(168, 85, 247, 0.3)',
+                        color: '#cbd5e1',
+                        boxShadow: submitStatus === "error"
+                          ? '0 0 20px rgba(255, 0, 110, 0.2)'
+                          : '0 0 20px rgba(168, 85, 247, 0.1)',
+                      }}
+                      onFocus={(e) => {
+                        if (submitStatus !== "error") {
+                          e.currentTarget.style.border = '2px solid rgba(0, 212, 255, 0.5)';
+                          e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 212, 255, 0.2)';
+                        }
+                      }}
+                      onBlur={(e) => {
+                        if (submitStatus !== "error") {
+                          e.currentTarget.style.border = '2px solid rgba(168, 85, 247, 0.3)';
+                          e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.1)';
+                        }
+                      }}
+                      data-testid="email-input"
+                    />
+                    {isSubmitting && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                        <Loader2 
+                          className="w-5 h-5 animate-spin"
+                          style={{
+                            color: '#00d4ff',
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {submitStatus === "success" && (
+                    <div 
+                      className="flex items-center gap-2 px-4 py-3 rounded-xl animate-fade-in"
+                      style={{
+                        background: 'rgba(0, 212, 255, 0.1)',
+                        border: '1px solid rgba(0, 212, 255, 0.3)',
+                      }}
+                      data-testid="success-message"
+                    >
+                      <Check 
+                        className="w-5 h-5 flex-shrink-0"
+                        style={{
+                          color: '#00d4ff',
+                          filter: 'drop-shadow(0 0 8px rgba(0, 212, 255, 0.8))',
+                        }}
+                      />
+                      <span
+                        className="text-sm font-light"
+                        style={{
+                          color: '#cbd5e1',
+                        }}
+                      >
+                        You're subscribed! We'll notify you when we're back online.
+                      </span>
+                    </div>
+                  )}
+
+                  {submitStatus === "error" && (
+                    <div 
+                      className="flex items-center gap-2 px-4 py-3 rounded-xl animate-fade-in"
+                      style={{
+                        background: 'rgba(255, 0, 110, 0.1)',
+                        border: '1px solid rgba(255, 0, 110, 0.3)',
+                      }}
+                      data-testid="error-message"
+                    >
+                      <AlertCircle 
+                        className="w-5 h-5 flex-shrink-0"
+                        style={{
+                          color: '#ff006e',
+                          filter: 'drop-shadow(0 0 8px rgba(255, 0, 110, 0.8))',
+                        }}
+                      />
+                      <span
+                        className="text-sm font-light"
+                        style={{
+                          color: '#cbd5e1',
+                        }}
+                      >
+                        {errorMessage}
+                      </span>
+                    </div>
+                  )}
+
+                  {submitStatus !== "success" && (
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full px-6 py-3 md:py-4 rounded-2xl text-base md:text-lg font-semibold transition-all duration-300"
+                      style={{
+                        background: 'linear-gradient(135deg, #00d4ff 0%, #a855f7 100%)',
+                        color: '#0a0f1a',
+                        boxShadow: '0 0 30px rgba(0, 212, 255, 0.3)',
+                        opacity: isSubmitting ? 0.6 : 1,
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSubmitting) {
+                          e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 212, 255, 0.5)';
+                          e.currentTarget.style.transform = 'scale(1.02)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 212, 255, 0.3)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      data-testid="subscribe-button"
+                    >
+                      {isSubmitting ? "Subscribing..." : "Notify Me"}
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+          </div>
+
           {/* Social Media Links */}
-          <div className="flex flex-col items-center gap-4 mt-4" data-testid="social-links">
+          <div className="flex flex-col items-center gap-4 mt-8" data-testid="social-links">
             <span
               className="text-xs md:text-sm font-medium tracking-widest uppercase"
               style={{
