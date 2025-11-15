@@ -1,4 +1,5 @@
-import { Loader2 } from "lucide-react";
+import { Loader2, Clock } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function MaintenancePage() {
   const particles = Array.from({ length: 20 }, (_, i) => ({
@@ -8,6 +9,39 @@ export default function MaintenancePage() {
     delay: Math.random() * 20,
     duration: Math.random() * 10 + 15,
   }));
+
+  const targetEndTime = new Date();
+  targetEndTime.setHours(targetEndTime.getHours() + 2);
+
+  const [timeRemaining, setTimeRemaining] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const calculateTimeRemaining = () => {
+      const now = new Date().getTime();
+      const end = targetEndTime.getTime();
+      const difference = end - now;
+
+      if (difference <= 0) {
+        setTimeRemaining({ hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((difference / (1000 * 60)) % 60);
+      const seconds = Math.floor((difference / 1000) % 60);
+
+      setTimeRemaining({ hours, minutes, seconds });
+    };
+
+    calculateTimeRemaining();
+    const interval = setInterval(calculateTimeRemaining, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div 
@@ -151,6 +185,148 @@ export default function MaintenancePage() {
           >
             We'll be back shortly
           </p>
+
+          {/* Countdown Timer */}
+          <div className="flex flex-col items-center gap-4" data-testid="countdown-timer">
+            <div className="flex items-center gap-2">
+              <Clock 
+                className="w-5 h-5"
+                style={{
+                  color: '#00d4ff',
+                  filter: 'drop-shadow(0 0 8px rgba(0, 212, 255, 0.6))',
+                }}
+              />
+              <span
+                className="text-xs md:text-sm font-medium tracking-widest uppercase"
+                style={{
+                  color: '#94a3b8',
+                  textShadow: '0 0 10px rgba(148, 163, 184, 0.5)',
+                }}
+              >
+                Estimated Time Remaining
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-2 md:gap-4">
+              {/* Hours */}
+              <div 
+                className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
+                style={{
+                  background: 'rgba(0, 212, 255, 0.05)',
+                  border: '1px solid rgba(0, 212, 255, 0.2)',
+                  boxShadow: '0 0 20px rgba(0, 212, 255, 0.1), inset 0 0 20px rgba(0, 212, 255, 0.05)',
+                }}
+              >
+                <span
+                  className="text-3xl md:text-5xl font-bold tabular-nums"
+                  style={{
+                    background: 'linear-gradient(135deg, #00d4ff 0%, #a855f7 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    filter: 'drop-shadow(0 0 10px rgba(0, 212, 255, 0.5))',
+                  }}
+                  data-testid="countdown-hours"
+                >
+                  {String(timeRemaining.hours).padStart(2, '0')}
+                </span>
+                <span
+                  className="text-xs md:text-sm font-light mt-1"
+                  style={{
+                    color: '#94a3b8',
+                  }}
+                >
+                  Hours
+                </span>
+              </div>
+
+              {/* Separator */}
+              <span
+                className="text-2xl md:text-4xl font-bold"
+                style={{
+                  color: '#ff006e',
+                  filter: 'drop-shadow(0 0 10px rgba(255, 0, 110, 0.5))',
+                }}
+              >
+                :
+              </span>
+
+              {/* Minutes */}
+              <div 
+                className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
+                style={{
+                  background: 'rgba(255, 0, 110, 0.05)',
+                  border: '1px solid rgba(255, 0, 110, 0.2)',
+                  boxShadow: '0 0 20px rgba(255, 0, 110, 0.1), inset 0 0 20px rgba(255, 0, 110, 0.05)',
+                }}
+              >
+                <span
+                  className="text-3xl md:text-5xl font-bold tabular-nums"
+                  style={{
+                    background: 'linear-gradient(135deg, #ff006e 0%, #a855f7 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    filter: 'drop-shadow(0 0 10px rgba(255, 0, 110, 0.5))',
+                  }}
+                  data-testid="countdown-minutes"
+                >
+                  {String(timeRemaining.minutes).padStart(2, '0')}
+                </span>
+                <span
+                  className="text-xs md:text-sm font-light mt-1"
+                  style={{
+                    color: '#94a3b8',
+                  }}
+                >
+                  Minutes
+                </span>
+              </div>
+
+              {/* Separator */}
+              <span
+                className="text-2xl md:text-4xl font-bold"
+                style={{
+                  color: '#a855f7',
+                  filter: 'drop-shadow(0 0 10px rgba(168, 85, 247, 0.5))',
+                }}
+              >
+                :
+              </span>
+
+              {/* Seconds */}
+              <div 
+                className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
+                style={{
+                  background: 'rgba(168, 85, 247, 0.05)',
+                  border: '1px solid rgba(168, 85, 247, 0.2)',
+                  boxShadow: '0 0 20px rgba(168, 85, 247, 0.1), inset 0 0 20px rgba(168, 85, 247, 0.05)',
+                }}
+              >
+                <span
+                  className="text-3xl md:text-5xl font-bold tabular-nums"
+                  style={{
+                    background: 'linear-gradient(135deg, #a855f7 0%, #00d4ff 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    filter: 'drop-shadow(0 0 10px rgba(168, 85, 247, 0.5))',
+                  }}
+                  data-testid="countdown-seconds"
+                >
+                  {String(timeRemaining.seconds).padStart(2, '0')}
+                </span>
+                <span
+                  className="text-xs md:text-sm font-light mt-1"
+                  style={{
+                    color: '#94a3b8',
+                  }}
+                >
+                  Seconds
+                </span>
+              </div>
+            </div>
+          </div>
 
           {/* Additional Status Text */}
           <p
