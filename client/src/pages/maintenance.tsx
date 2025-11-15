@@ -314,51 +314,6 @@ export default function MaintenancePage() {
             We'll be back shortly
           </p>
 
-          {/* Status Indicator with Rotating Hexagon */}
-          <div className="flex items-center justify-center gap-3" data-testid="status-indicator">
-            {/* Rotating Hexagon Animation */}
-            <div className="relative w-8 h-8 flex items-center justify-center">
-              <div
-                className="absolute inset-0 animate-rotate-hexagon"
-                style={{
-                  clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
-                  background: `linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)`,
-                  boxShadow: `
-                    0 0 20px hsl(var(--accent) / 0.6),
-                    0 0 40px hsl(var(--accent) / 0.3),
-                    inset 0 0 10px hsl(var(--accent) / 0.8)
-                  `,
-                }}
-              />
-              <div
-                className="absolute inset-[2px] animate-rotate-hexagon-reverse"
-                style={{
-                  clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
-                  background: 'hsl(var(--background))',
-                }}
-              />
-            </div>
-            <span
-              className="text-sm md:text-base font-medium tracking-widest uppercase"
-              style={{
-                color: 'hsl(var(--muted-foreground))',
-                textShadow: `0 0 10px hsl(var(--muted-foreground) / 0.5)`,
-              }}
-            >
-              System Upgrade In Progress
-            </span>
-          </div>
-
-          {/* Additional Status Text */}
-          <p
-            className="text-sm md:text-base font-light opacity-70"
-            style={{
-              color: 'hsl(var(--muted-foreground))',
-            }}
-            data-testid="status-text"
-          >
-            Our team is working hard to bring you an improved experience
-          </p>
 
           {/* Social Media Links */}
           <div className="flex flex-col items-center gap-4 mt-8" data-testid="social-links">
