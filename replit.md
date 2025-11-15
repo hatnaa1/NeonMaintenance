@@ -17,17 +17,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**November 15, 2025**
+**November 15, 2025 - Latest Updates**
+- **Starfall particles enhanced**: Now originate from top of viewport (not center) with invisible spawn point
+- **Background updated**: Fixed purple-to-magenta gradient (#1a0033 → #2d1b4e → #5e2563) matching reference image
+- **Facebook added**: Fourth social media link added alongside GitHub, Discord, and X
 - Implemented comprehensive theme variant system with 4 cyberpunk color schemes
 - Added theme switcher UI with click-outside functionality and localStorage persistence
-- Replaced all hard-coded colors with CSS variables for dynamic theming
-- All UI elements now respond to active theme
+- Particles and UI elements respond to active theme (background remains fixed purple gradient)
 - Theme variants: Default (Purple/Blue), Matrix (Green/Lime), Vaporwave (Pink/Cyan), Sunset (Orange/Red)
 - Simplified design: Removed email signup form and countdown timer
-- Enhanced particle system: Upgraded to cyberpunk starfall effect with 80 long streaks
-- Particles feature gradient trails, motion blur, and theme-responsive neon colors
+- Enhanced particle system: 80 cyberpunk starfall streaks with gradient trails and neon glow
 - Added rotating hexagon animation with neon glow effect as status indicator
-- "System Upgrade In Progress" replaces time-based messaging for cleaner minimalist design
+- "System Upgrade In Progress" for cleaner minimalist aesthetic
 
 ## System Architecture
 
