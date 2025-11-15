@@ -1,5 +1,6 @@
 import { Loader2, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
+import { SiGithub, SiDiscord, SiX } from "react-icons/si";
 
 export default function MaintenancePage() {
   const particles = Array.from({ length: 20 }, (_, i) => ({
@@ -338,6 +339,118 @@ export default function MaintenancePage() {
           >
             Our team is working hard to bring you an improved experience
           </p>
+
+          {/* Social Media Links */}
+          <div className="flex flex-col items-center gap-4 mt-4" data-testid="social-links">
+            <span
+              className="text-xs md:text-sm font-medium tracking-widest uppercase"
+              style={{
+                color: '#64748b',
+              }}
+            >
+              Stay Connected
+            </span>
+            <div className="flex items-center gap-6">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative"
+                data-testid="social-link-github"
+              >
+                <div
+                  className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%)',
+                    filter: 'blur(15px)',
+                  }}
+                />
+                <SiGithub
+                  className="w-7 h-7 md:w-8 md:h-8 relative z-10 transition-all duration-300"
+                  style={{
+                    color: '#94a3b8',
+                    filter: 'drop-shadow(0 0 0px transparent)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#00d4ff';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px rgba(0, 212, 255, 0.8))';
+                    e.currentTarget.style.transform = 'scale(1.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 0px transparent)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                />
+              </a>
+
+              <a
+                href="https://discord.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative"
+                data-testid="social-link-discord"
+              >
+                <div
+                  className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%)',
+                    filter: 'blur(15px)',
+                  }}
+                />
+                <SiDiscord
+                  className="w-7 h-7 md:w-8 md:h-8 relative z-10 transition-all duration-300"
+                  style={{
+                    color: '#94a3b8',
+                    filter: 'drop-shadow(0 0 0px transparent)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#a855f7';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.8))';
+                    e.currentTarget.style.transform = 'scale(1.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 0px transparent)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                />
+              </a>
+
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative"
+                data-testid="social-link-x"
+              >
+                <div
+                  className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(255, 0, 110, 0.3) 0%, transparent 70%)',
+                    filter: 'blur(15px)',
+                  }}
+                />
+                <SiX
+                  className="w-7 h-7 md:w-8 md:h-8 relative z-10 transition-all duration-300"
+                  style={{
+                    color: '#94a3b8',
+                    filter: 'drop-shadow(0 0 0px transparent)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#ff006e';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px rgba(255, 0, 110, 0.8))';
+                    e.currentTarget.style.transform = 'scale(1.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 0px transparent)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
