@@ -19,7 +19,9 @@ Preferred communication style: Simple, everyday language.
 
 **November 15, 2025 - Final Version**
 - **Ultra-minimal design**: Removed rotating hexagon and status text for cleaner aesthetic
-- **Starfall particles**: 80 vertical streaks originating from top of viewport with invisible spawn point
+- **Starfall particles**: 80 vertical streaks with gradual appearance (0-20s delay) to prevent "ice curtain" effect
+- Particles originate from top of viewport with invisible spawn point
+- Natural, continuous starfall animation with staggered timing
 - **Background**: Fixed purple-to-magenta gradient (#1a0033 → #2d1b4e → #5e2563)
 - **Social links**: 4 icons with neon hover effects (GitHub, Discord, X, Facebook)
 - **Theme system**: 4 cyberpunk color variants (Default, Matrix, Vaporwave, Sunset)
