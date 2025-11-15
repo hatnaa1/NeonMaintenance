@@ -1,3 +1,4 @@
+![Alt text](https://github.com/hatnaa1/NeonMaintenance/blob/main/screenshot.jpg)
 A stunning cyberpunk-themed maintenance page featuring 80 animated starfall particles with gradual appearance, purple/magenta neon aesthetic, glassmorphism design, and four beautiful theme variants. Built with React, TypeScript, and TailwindCSS for a smooth, modern user experience.
 
 ## ✨ Features
