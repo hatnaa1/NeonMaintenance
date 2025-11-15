@@ -2,48 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE */
+/* CYBERPUNK DARK MODE - Neon Palette */
 :root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
-  --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
-  --background: 0 0% 98%;
-  --foreground: 0 0% 8%;
-  --border: 0 0% 88%;
-  --card: 0 0% 96%;
-  --card-foreground: 0 0% 8%;
-  --card-border: 0 0% 92%;
-  --sidebar: 0 0% 94%;
-  --sidebar-foreground: 0 0% 8%;
-  --sidebar-border: 0 0% 89%;
-  --sidebar-primary: 267 84% 52%;
-  --sidebar-primary-foreground: 267 84% 98%;
-  --sidebar-accent: 267 12% 88%;
-  --sidebar-accent-foreground: 267 12% 12%;
-  --sidebar-ring: 267 84% 52%;
-  --popover: 0 0% 92%;
-  --popover-foreground: 0 0% 8%;
-  --popover-border: 0 0% 87%;
-  --primary: 267 84% 52%;
-  --primary-foreground: 267 84% 98%;
-  --secondary: 267 6% 84%;
-  --secondary-foreground: 267 6% 12%;
-  --muted: 267 5% 86%;
-  --muted-foreground: 267 5% 28%;
-  --accent: 267 8% 90%;
-  --accent-foreground: 267 8% 14%;
-  --destructive: 0 72% 48%;
-  --destructive-foreground: 0 72% 98%;
-  --input: 0 0% 72%;
-  --ring: 267 84% 52%;
-  --chart-1: 267 84% 28%;
-  --chart-2: 320 76% 32%;
-  --chart-3: 200 88% 32%;
-  --chart-4: 280 72% 34%;
-  --chart-5: 170 68% 30%;
-  --font-sans: Open Sans, sans-serif;
+  --button-outline: rgba(168, 85, 247, .20);
+  --badge-outline: rgba(0, 212, 255, .15);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(0, 212, 255, .06);
+  --elevate-2: rgba(168, 85, 247, .12);
+  --background: 220 50% 5%;
+  --foreground: 200 15% 92%;
+  --border: 270 50% 25%;
+  --card: 220 45% 8%;
+  --card-foreground: 200 15% 92%;
+  --card-border: 270 40% 30%;
+  --sidebar: 220 45% 7%;
+  --sidebar-foreground: 200 15% 92%;
+  --sidebar-border: 270 40% 20%;
+  --sidebar-primary: 270 100% 65%;
+  --sidebar-primary-foreground: 270 15% 98%;
+  --sidebar-accent: 190 100% 50%;
+  --sidebar-accent-foreground: 190 15% 10%;
+  --sidebar-ring: 270 100% 65%;
+  --popover: 220 45% 10%;
+  --popover-foreground: 200 15% 92%;
+  --popover-border: 270 40% 30%;
+  --primary: 270 100% 65%;
+  --primary-foreground: 270 15% 98%;
+  --secondary: 330 100% 55%;
+  --secondary-foreground: 330 15% 98%;
+  --muted: 220 20% 15%;
+  --muted-foreground: 200 10% 60%;
+  --accent: 190 100% 50%;
+  --accent-foreground: 190 15% 10%;
+  --destructive: 0 72% 52%;
+  --destructive-foreground: 0 15% 98%;
+  --input: 220 40% 20%;
+  --ring: 270 100% 65%;
+  --chart-1: 270 100% 65%;
+  --chart-2: 330 100% 55%;
+  --chart-3: 190 100% 50%;
+  --chart-4: 280 90% 60%;
+  --chart-5: 200 85% 55%;
+  --font-sans: Space Grotesk, Inter, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: .5rem;
@@ -88,45 +88,45 @@
 }
 
 .dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
+  --button-outline: rgba(168, 85, 247, .20);
+  --badge-outline: rgba(0, 212, 255, .15);
   --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .09);
-  --background: 220 50% 6%;
-  --foreground: 220 5% 96%;
-  --border: 220 40% 14%;
+  --elevate-1: rgba(0, 212, 255, .06);
+  --elevate-2: rgba(168, 85, 247, .12);
+  --background: 220 50% 5%;
+  --foreground: 200 15% 92%;
+  --border: 270 50% 25%;
   --card: 220 45% 8%;
-  --card-foreground: 220 5% 96%;
-  --card-border: 220 40% 12%;
-  --sidebar: 220 42% 10%;
-  --sidebar-foreground: 220 5% 96%;
-  --sidebar-border: 220 40% 14%;
-  --sidebar-primary: 267 84% 58%;
-  --sidebar-primary-foreground: 267 84% 98%;
-  --sidebar-accent: 267 18% 16%;
-  --sidebar-accent-foreground: 267 18% 92%;
-  --sidebar-ring: 267 84% 58%;
-  --popover: 220 38% 12%;
-  --popover-foreground: 220 5% 96%;
-  --popover-border: 220 38% 16%;
-  --primary: 267 84% 58%;
-  --primary-foreground: 267 84% 98%;
-  --secondary: 267 8% 18%;
-  --secondary-foreground: 267 8% 92%;
-  --muted: 267 10% 16%;
-  --muted-foreground: 267 10% 74%;
-  --accent: 267 12% 14%;
-  --accent-foreground: 267 12% 88%;
+  --card-foreground: 200 15% 92%;
+  --card-border: 270 40% 30%;
+  --sidebar: 220 45% 7%;
+  --sidebar-foreground: 200 15% 92%;
+  --sidebar-border: 270 40% 20%;
+  --sidebar-primary: 270 100% 65%;
+  --sidebar-primary-foreground: 270 15% 98%;
+  --sidebar-accent: 190 100% 50%;
+  --sidebar-accent-foreground: 190 15% 10%;
+  --sidebar-ring: 270 100% 65%;
+  --popover: 220 45% 10%;
+  --popover-foreground: 200 15% 92%;
+  --popover-border: 270 40% 30%;
+  --primary: 270 100% 65%;
+  --primary-foreground: 270 15% 98%;
+  --secondary: 330 100% 55%;
+  --secondary-foreground: 330 15% 98%;
+  --muted: 220 20% 15%;
+  --muted-foreground: 200 10% 60%;
+  --accent: 190 100% 50%;
+  --accent-foreground: 190 15% 10%;
   --destructive: 0 72% 52%;
-  --destructive-foreground: 0 72% 98%;
-  --input: 220 40% 28%;
-  --ring: 267 84% 58%;
-  --chart-1: 267 84% 68%;
-  --chart-2: 320 76% 72%;
-  --chart-3: 200 88% 68%;
-  --chart-4: 280 72% 70%;
-  --chart-5: 170 68% 66%;
+  --destructive-foreground: 0 15% 98%;
+  --input: 220 40% 20%;
+  --ring: 270 100% 65%;
+  --chart-1: 270 100% 65%;
+  --chart-2: 330 100% 55%;
+  --chart-3: 190 100% 50%;
+  --chart-4: 280 90% 60%;
+  --chart-5: 200 85% 55%;
   --shadow-2xs: 0px 2px 0px 0px hsl(267 84% 58% / 0.00);
   --shadow-xs: 0px 2px 0px 0px hsl(267 84% 58% / 0.00);
   --shadow-sm: 0px 2px 0px 0px hsl(267 84% 58% / 0.00), 0px 1px 2px -1px hsl(267 84% 58% / 0.00);
@@ -284,5 +284,94 @@
   .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
+  }
+
+  /* Cyberpunk Neon Animations */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px);
+    }
+    50% {
+      transform: translateY(-30px) translateX(10px);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes drift-up {
+    0% {
+      transform: translateY(100vh) translateX(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.6;
+    }
+    90% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(-100px) translateX(20px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes rotate-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-slow {
+    animation: float-slow 8s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  .animate-drift-up {
+    animation: drift-up linear infinite;
+  }
+
+  .animate-rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
   }
 }
