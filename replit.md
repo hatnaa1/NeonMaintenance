@@ -25,6 +25,8 @@ Preferred communication style: Simple, everyday language.
 - Theme variants: Default (Purple/Blue), Matrix (Green/Lime), Vaporwave (Pink/Cyan), Sunset (Orange/Red)
 - Simplified design: Removed rotating center decorations and email signup form
 - Enhanced particle system: Increased from 20 to 60 particles, changed direction to flow from top to bottom
+- Added rotating hexagon animation with neon glow effect to replace clock icon
+- Changed countdown label from "Estimated Time Remaining" to "System Upgrade In Progress"
 
 ## System Architecture
 

@@ -1,4 +1,4 @@
-import { Clock, Palette } from "lucide-react";
+import { Palette } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { SiGithub, SiDiscord, SiX } from "react-icons/si";
 
@@ -333,14 +333,29 @@ export default function MaintenancePage() {
 
           {/* Countdown Timer */}
           <div className="flex flex-col items-center gap-4" data-testid="countdown-timer">
-            <div className="flex items-center gap-2">
-              <Clock 
-                className="w-5 h-5"
-                style={{
-                  color: 'hsl(var(--accent))',
-                  filter: `drop-shadow(0 0 8px hsl(var(--accent) / 0.6))`,
-                }}
-              />
+            <div className="flex items-center gap-3">
+              {/* Rotating Hexagon Animation */}
+              <div className="relative w-6 h-6 flex items-center justify-center">
+                <div
+                  className="absolute inset-0 animate-rotate-hexagon"
+                  style={{
+                    clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
+                    background: `linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)`,
+                    boxShadow: `
+                      0 0 20px hsl(var(--accent) / 0.6),
+                      0 0 40px hsl(var(--accent) / 0.3),
+                      inset 0 0 10px hsl(var(--accent) / 0.8)
+                    `,
+                  }}
+                />
+                <div
+                  className="absolute inset-[2px] animate-rotate-hexagon-reverse"
+                  style={{
+                    clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
+                    background: 'hsl(var(--background))',
+                  }}
+                />
+              </div>
               <span
                 className="text-xs md:text-sm font-medium tracking-widest uppercase"
                 style={{
@@ -348,7 +363,7 @@ export default function MaintenancePage() {
                   textShadow: `0 0 10px hsl(var(--muted-foreground) / 0.5)`,
                 }}
               >
-                Estimated Time Remaining
+                System Upgrade In Progress
               </span>
             </div>
             

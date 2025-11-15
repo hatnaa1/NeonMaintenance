@@ -392,6 +392,14 @@
     animation: rotate-slow 20s linear infinite;
   }
 
+  .animate-rotate-hexagon {
+    animation: rotate-slow 8s linear infinite;
+  }
+
+  .animate-rotate-hexagon-reverse {
+    animation: rotate-slow 12s linear infinite reverse;
+  }
+
   .animate-fade-in {
     animation: fade-in 0.5s ease-out forwards;
   }
