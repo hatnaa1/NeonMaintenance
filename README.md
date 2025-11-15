@@ -9,7 +9,6 @@ A stunning cyberpunk-themed maintenance page featuring 80 animated starfall part
 - 🔗 **Social Media Links** - GitHub, Discord, X (Twitter), Facebook with neon hover effects
 - 💾 **Theme Persistence** - Your theme choice saved in localStorage
 - 📱 **Fully Responsive** - Works perfectly on all devices
-- ⚡ **Built with Modern Stack** - React 18, TypeScript, TailwindCSS, Vite
 
 ## 🛠️ Tech Stack
 - **Frontend**: React 18 with TypeScript
