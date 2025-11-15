@@ -62,15 +62,6 @@ export default function MaintenancePage() {
     duration: Math.random() * 10 + 15,
   }));
 
-  const targetEndTime = new Date();
-  targetEndTime.setHours(targetEndTime.getHours() + 2);
-
-  const [timeRemaining, setTimeRemaining] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
   const [currentTheme, setCurrentTheme] = useState<ThemeName>("default");
   const [showThemePicker, setShowThemePicker] = useState(false);
   const themePickerRef = useRef<HTMLDivElement>(null);
@@ -109,30 +100,6 @@ export default function MaintenancePage() {
     localStorage.setItem("maintenance-theme", themeName);
     setShowThemePicker(false);
   };
-
-  useEffect(() => {
-    const calculateTimeRemaining = () => {
-      const now = new Date().getTime();
-      const end = targetEndTime.getTime();
-      const difference = end - now;
-
-      if (difference <= 0) {
-        setTimeRemaining({ hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
-
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((difference / (1000 * 60)) % 60);
-      const seconds = Math.floor((difference / 1000) % 60);
-
-      setTimeRemaining({ hours, minutes, seconds });
-    };
-
-    calculateTimeRemaining();
-    const interval = setInterval(calculateTimeRemaining, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div 
@@ -331,161 +298,39 @@ export default function MaintenancePage() {
             We'll be back shortly
           </p>
 
-          {/* Countdown Timer */}
-          <div className="flex flex-col items-center gap-4" data-testid="countdown-timer">
-            <div className="flex items-center gap-3">
-              {/* Rotating Hexagon Animation */}
-              <div className="relative w-6 h-6 flex items-center justify-center">
-                <div
-                  className="absolute inset-0 animate-rotate-hexagon"
-                  style={{
-                    clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
-                    background: `linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)`,
-                    boxShadow: `
-                      0 0 20px hsl(var(--accent) / 0.6),
-                      0 0 40px hsl(var(--accent) / 0.3),
-                      inset 0 0 10px hsl(var(--accent) / 0.8)
-                    `,
-                  }}
-                />
-                <div
-                  className="absolute inset-[2px] animate-rotate-hexagon-reverse"
-                  style={{
-                    clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
-                    background: 'hsl(var(--background))',
-                  }}
-                />
-              </div>
-              <span
-                className="text-xs md:text-sm font-medium tracking-widest uppercase"
+          {/* Status Indicator with Rotating Hexagon */}
+          <div className="flex items-center justify-center gap-3" data-testid="status-indicator">
+            {/* Rotating Hexagon Animation */}
+            <div className="relative w-8 h-8 flex items-center justify-center">
+              <div
+                className="absolute inset-0 animate-rotate-hexagon"
                 style={{
-                  color: 'hsl(var(--muted-foreground))',
-                  textShadow: `0 0 10px hsl(var(--muted-foreground) / 0.5)`,
+                  clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
+                  background: `linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)`,
+                  boxShadow: `
+                    0 0 20px hsl(var(--accent) / 0.6),
+                    0 0 40px hsl(var(--accent) / 0.3),
+                    inset 0 0 10px hsl(var(--accent) / 0.8)
+                  `,
                 }}
-              >
-                System Upgrade In Progress
-              </span>
+              />
+              <div
+                className="absolute inset-[2px] animate-rotate-hexagon-reverse"
+                style={{
+                  clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
+                  background: 'hsl(var(--background))',
+                }}
+              />
             </div>
-            
-            <div className="flex items-center gap-2 md:gap-4">
-              {/* Hours */}
-              <div 
-                className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
-                style={{
-                  background: `hsl(var(--accent) / 0.05)`,
-                  border: `1px solid hsl(var(--accent) / 0.2)`,
-                  boxShadow: `0 0 20px hsl(var(--accent) / 0.1), inset 0 0 20px hsl(var(--accent) / 0.05)`,
-                }}
-              >
-                <span
-                  className="text-3xl md:text-5xl font-bold tabular-nums"
-                  style={{
-                    background: `linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    filter: `drop-shadow(0 0 10px hsl(var(--accent) / 0.5))`,
-                  }}
-                  data-testid="countdown-hours"
-                >
-                  {String(timeRemaining.hours).padStart(2, '0')}
-                </span>
-                <span
-                  className="text-xs md:text-sm font-light mt-1"
-                  style={{
-                    color: 'hsl(var(--muted-foreground))',
-                  }}
-                >
-                  Hours
-                </span>
-              </div>
-
-              {/* Separator */}
-              <span
-                className="text-2xl md:text-4xl font-bold"
-                style={{
-                  color: 'hsl(var(--secondary))',
-                  filter: `drop-shadow(0 0 10px hsl(var(--secondary) / 0.5))`,
-                }}
-              >
-                :
-              </span>
-
-              {/* Minutes */}
-              <div 
-                className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
-                style={{
-                  background: `hsl(var(--secondary) / 0.05)`,
-                  border: `1px solid hsl(var(--secondary) / 0.2)`,
-                  boxShadow: `0 0 20px hsl(var(--secondary) / 0.1), inset 0 0 20px hsl(var(--secondary) / 0.05)`,
-                }}
-              >
-                <span
-                  className="text-3xl md:text-5xl font-bold tabular-nums"
-                  style={{
-                    background: `linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--primary)) 100%)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    filter: `drop-shadow(0 0 10px hsl(var(--secondary) / 0.5))`,
-                  }}
-                  data-testid="countdown-minutes"
-                >
-                  {String(timeRemaining.minutes).padStart(2, '0')}
-                </span>
-                <span
-                  className="text-xs md:text-sm font-light mt-1"
-                  style={{
-                    color: 'hsl(var(--muted-foreground))',
-                  }}
-                >
-                  Minutes
-                </span>
-              </div>
-
-              {/* Separator */}
-              <span
-                className="text-2xl md:text-4xl font-bold"
-                style={{
-                  color: 'hsl(var(--primary))',
-                  filter: `drop-shadow(0 0 10px hsl(var(--primary) / 0.5))`,
-                }}
-              >
-                :
-              </span>
-
-              {/* Seconds */}
-              <div 
-                className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
-                style={{
-                  background: `hsl(var(--primary) / 0.05)`,
-                  border: `1px solid hsl(var(--primary) / 0.2)`,
-                  boxShadow: `0 0 20px hsl(var(--primary) / 0.1), inset 0 0 20px hsl(var(--primary) / 0.05)`,
-                }}
-              >
-                <span
-                  className="text-3xl md:text-5xl font-bold tabular-nums"
-                  style={{
-                    background: `linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    filter: `drop-shadow(0 0 10px hsl(var(--primary) / 0.5))`,
-                  }}
-                  data-testid="countdown-seconds"
-                >
-                  {String(timeRemaining.seconds).padStart(2, '0')}
-                </span>
-                <span
-                  className="text-xs md:text-sm font-light mt-1"
-                  style={{
-                    color: 'hsl(var(--muted-foreground))',
-                  }}
-                >
-                  Seconds
-                </span>
-              </div>
-            </div>
+            <span
+              className="text-sm md:text-base font-medium tracking-widest uppercase"
+              style={{
+                color: 'hsl(var(--muted-foreground))',
+                textShadow: `0 0 10px hsl(var(--muted-foreground) / 0.5)`,
+              }}
+            >
+              System Upgrade In Progress
+            </span>
           </div>
 
           {/* Additional Status Text */}
