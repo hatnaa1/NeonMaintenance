@@ -375,3 +375,65 @@
     animation: fade-in 0.5s ease-out forwards;
   }
 }
+
+/* Smooth theme transitions */
+* {
+  transition-property: background-color, border-color, color, box-shadow, background, border;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* THEME VARIANTS - Cyberpunk Color Schemes */
+
+/* Theme 1: Cyber Green (Matrix) */
+[data-theme="matrix"] {
+  --primary: 150 100% 50%;
+  --primary-foreground: 150 15% 5%;
+  --secondary: 80 100% 45%;
+  --secondary-foreground: 80 15% 5%;
+  --accent: 165 100% 55%;
+  --accent-foreground: 165 15% 5%;
+  --border: 150 50% 25%;
+  --ring: 150 100% 50%;
+  --elevate-1: rgba(0, 255, 65, .06);
+  --elevate-2: rgba(0, 255, 65, .12);
+  --button-outline: rgba(0, 255, 65, .20);
+  --badge-outline: rgba(0, 255, 65, .15);
+}
+
+/* Theme 2: Vaporwave (Pink/Cyan) */
+[data-theme="vaporwave"] {
+  --primary: 320 100% 72%;
+  --primary-foreground: 320 15% 10%;
+  --secondary: 185 100% 50%;
+  --secondary-foreground: 185 15% 10%;
+  --accent: 260 100% 70%;
+  --accent-foreground: 260 15% 10%;
+  --border: 320 50% 30%;
+  --ring: 320 100% 72%;
+  --elevate-1: rgba(255, 113, 206, .06);
+  --elevate-2: rgba(255, 113, 206, .12);
+  --button-outline: rgba(255, 113, 206, .20);
+  --badge-outline: rgba(255, 113, 206, .15);
+}
+
+/* Theme 3: Sunset (Orange/Red) */
+[data-theme="sunset"] {
+  --primary: 15 100% 55%;
+  --primary-foreground: 15 15% 10%;
+  --secondary: 350 100% 60%;
+  --secondary-foreground: 350 15% 10%;
+  --accent: 30 100% 50%;
+  --accent-foreground: 30 15% 10%;
+  --border: 15 50% 30%;
+  --ring: 15 100% 55%;
+  --elevate-1: rgba(255, 107, 0, .06);
+  --elevate-2: rgba(255, 107, 0, .12);
+  --button-outline: rgba(255, 107, 0, .20);
+  --badge-outline: rgba(255, 107, 0, .15);
+}
+
+/* Theme 4: Default (Purple/Blue) */
+[data-theme="default"] {
+  /* Already defined in :root */
+}

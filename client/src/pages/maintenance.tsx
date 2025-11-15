@@ -1,7 +1,58 @@
-import { Loader2, Clock, Mail, Check, AlertCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Loader2, Clock, Mail, Check, AlertCircle, Palette } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { SiGithub, SiDiscord, SiX } from "react-icons/si";
 import { apiRequest } from "@/lib/queryClient";
+
+type ThemeName = "default" | "matrix" | "vaporwave" | "sunset";
+
+interface Theme {
+  name: ThemeName;
+  label: string;
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+  };
+}
+
+const themes: Theme[] = [
+  {
+    name: "default",
+    label: "Cyberpunk",
+    colors: {
+      primary: "#a855f7",
+      secondary: "#ff006e",
+      accent: "#00d4ff",
+    },
+  },
+  {
+    name: "matrix",
+    label: "Matrix",
+    colors: {
+      primary: "#00ff41",
+      secondary: "#ccff00",
+      accent: "#00e5cc",
+    },
+  },
+  {
+    name: "vaporwave",
+    label: "Vaporwave",
+    colors: {
+      primary: "#ff71ce",
+      secondary: "#01cdfe",
+      accent: "#b967ff",
+    },
+  },
+  {
+    name: "sunset",
+    label: "Sunset",
+    colors: {
+      primary: "#ff6b00",
+      secondary: "#ff1053",
+      accent: "#ff8c00",
+    },
+  },
+];
 
 export default function MaintenancePage() {
   const particles = Array.from({ length: 20 }, (_, i) => ({
@@ -25,6 +76,44 @@ export default function MaintenancePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [currentTheme, setCurrentTheme] = useState<ThemeName>("default");
+  const [showThemePicker, setShowThemePicker] = useState(false);
+  const themePickerRef = useRef<HTMLDivElement>(null);
+  const themeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("maintenance-theme") as ThemeName;
+    if (savedTheme && themes.find(t => t.name === savedTheme)) {
+      setCurrentTheme(savedTheme);
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      
+      if (showThemePicker && 
+          themePickerRef.current && 
+          themeButtonRef.current &&
+          !themePickerRef.current.contains(target) && 
+          !themeButtonRef.current.contains(target)) {
+        setShowThemePicker(false);
+      }
+    };
+
+    if (showThemePicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showThemePicker]);
+
+  const handleThemeChange = (themeName: ThemeName) => {
+    setCurrentTheme(themeName);
+    document.documentElement.setAttribute("data-theme", themeName);
+    localStorage.setItem("maintenance-theme", themeName);
+    setShowThemePicker(false);
+  };
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -86,11 +175,86 @@ export default function MaintenancePage() {
     <div 
       className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
       style={{ 
-        background: 'linear-gradient(to bottom, #0a0f1a 0%, #0d1219 50%, #0a0f1a 100%)',
+        background: `linear-gradient(to bottom, hsl(var(--background) / 0.95) 0%, hsl(var(--card) / 0.9) 50%, hsl(var(--background) / 0.95) 100%)`,
         fontFamily: 'Space Grotesk, sans-serif'
       }}
       data-testid="maintenance-page"
     >
+      {/* Theme Switcher Button - Top Right */}
+      <button
+        ref={themeButtonRef}
+        onClick={() => setShowThemePicker(!showThemePicker)}
+        className="fixed top-6 right-6 z-50 p-3 rounded-full transition-all duration-300 hover:scale-110"
+        style={{
+          background: `hsl(var(--background) / 0.6)`,
+          backdropFilter: 'blur(10px)',
+          border: `1px solid hsl(var(--primary) / 0.3)`,
+          boxShadow: `0 0 20px hsl(var(--primary) / 0.2)`,
+        }}
+        data-testid="theme-toggle-button"
+        aria-label="Change theme"
+      >
+        <Palette className="w-5 h-5" style={{ color: 'hsl(var(--primary))' }} />
+      </button>
+
+      {/* Theme Picker Panel */}
+      {showThemePicker && (
+        <div
+          ref={themePickerRef}
+          className="fixed top-20 right-6 z-50 p-4 rounded-2xl animate-fade-in"
+          style={{
+            background: `hsl(var(--background) / 0.8)`,
+            backdropFilter: 'blur(20px)',
+            border: `1px solid hsl(var(--primary) / 0.3)`,
+            boxShadow: `0 0 40px hsl(var(--primary) / 0.2)`,
+          }}
+          data-testid="theme-picker"
+        >
+          <div className="mb-3">
+            <p className="text-sm font-medium" style={{ color: 'hsl(var(--foreground))' }}>Choose Theme</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            {themes.map((theme) => (
+              <button
+                key={theme.name}
+                onClick={() => handleThemeChange(theme.name)}
+                className="flex items-center gap-3 p-3 rounded-lg transition-all duration-200 hover:scale-105"
+                style={{
+                  background: currentTheme === theme.name 
+                    ? `hsl(var(--primary) / 0.15)` 
+                    : `hsl(var(--foreground) / 0.04)`,
+                  border: currentTheme === theme.name
+                    ? `1px solid hsl(var(--primary) / 0.5)`
+                    : `1px solid hsl(var(--foreground) / 0.1)`,
+                }}
+                data-testid={`theme-option-${theme.name}`}
+              >
+                <div className="flex gap-1">
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ background: theme.colors.primary }}
+                  />
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ background: theme.colors.secondary }}
+                  />
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ background: theme.colors.accent }}
+                  />
+                </div>
+                <span className="text-sm font-medium" style={{ color: 'hsl(var(--foreground))' }}>
+                  {theme.label}
+                </span>
+                {currentTheme === theme.name && (
+                  <Check className="w-4 h-4 ml-auto" style={{ color: 'hsl(var(--primary))' }} />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Animated Background Particles */}
       {particles.map((particle) => (
         <div
@@ -100,8 +264,8 @@ export default function MaintenancePage() {
             width: `${particle.size}px`,
             height: `${particle.size}px`,
             left: `${particle.left}%`,
-            background: 'radial-gradient(circle, rgba(0, 212, 255, 0.8) 0%, rgba(168, 85, 247, 0.4) 50%, transparent 70%)',
-            boxShadow: '0 0 10px rgba(0, 212, 255, 0.5)',
+            background: `radial-gradient(circle, hsl(var(--accent) / 0.8) 0%, hsl(var(--primary) / 0.4) 50%, transparent 70%)`,
+            boxShadow: `0 0 10px hsl(var(--accent) / 0.5)`,
             animationDelay: `${particle.delay}s`,
             animationDuration: `${particle.duration}s`,
           }}
@@ -114,7 +278,7 @@ export default function MaintenancePage() {
         <div
           className="absolute -top-20 -right-20 w-96 h-96 rounded-full opacity-20 animate-pulse-glow"
           style={{
-            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%)',
+            background: `radial-gradient(circle, hsl(var(--primary) / 0.3) 0%, transparent 70%)`,
             filter: 'blur(40px)',
           }}
         />
@@ -123,7 +287,7 @@ export default function MaintenancePage() {
         <div
           className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full opacity-15 animate-float-slow"
           style={{
-            background: 'radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%)',
+            background: `radial-gradient(circle, hsl(var(--accent) / 0.3) 0%, transparent 70%)`,
             filter: 'blur(50px)',
           }}
         />
@@ -134,7 +298,7 @@ export default function MaintenancePage() {
           style={{
             width: '200px',
             height: '200px',
-            background: 'linear-gradient(135deg, rgba(255, 0, 110, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%)',
+            background: `linear-gradient(135deg, hsl(var(--secondary) / 0.2) 0%, hsl(var(--primary) / 0.2) 100%)`,
             clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)',
             filter: 'blur(30px)',
           }}
@@ -144,7 +308,7 @@ export default function MaintenancePage() {
         <div
           className="absolute top-0 left-1/4 w-1 h-64 opacity-30 animate-pulse-glow"
           style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(0, 212, 255, 0.6) 50%, transparent 100%)',
+            background: `linear-gradient(to bottom, transparent 0%, hsl(var(--accent) / 0.6) 50%, transparent 100%)`,
             transform: 'rotate(25deg)',
             filter: 'blur(2px)',
           }}
@@ -152,7 +316,7 @@ export default function MaintenancePage() {
         <div
           className="absolute bottom-0 right-1/3 w-1 h-80 opacity-25 animate-pulse-glow"
           style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(255, 0, 110, 0.6) 50%, transparent 100%)',
+            background: `linear-gradient(to bottom, transparent 0%, hsl(var(--secondary) / 0.6) 50%, transparent 100%)`,
             transform: 'rotate(-20deg)',
             filter: 'blur(2px)',
             animationDelay: '1s',
@@ -164,13 +328,13 @@ export default function MaintenancePage() {
       <div 
         className="relative z-10 w-full max-w-2xl mx-4 px-8 py-12 md:px-16 md:py-16 rounded-3xl animate-fade-in"
         style={{
-          background: 'rgba(15, 23, 42, 0.4)',
+          background: 'hsl(var(--background) / 0.4)',
           backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(168, 85, 247, 0.3)',
+          border: `1px solid hsl(var(--primary) / 0.3)`,
           boxShadow: `
-            0 0 80px rgba(168, 85, 247, 0.15),
-            0 0 40px rgba(0, 212, 255, 0.1),
-            inset 0 0 60px rgba(168, 85, 247, 0.03)
+            0 0 80px hsl(var(--primary) / 0.15),
+            0 0 40px hsl(var(--accent) / 0.1),
+            inset 0 0 60px hsl(var(--primary) / 0.03)
           `,
         }}
         data-testid="glassmorphism-card"
@@ -184,15 +348,15 @@ export default function MaintenancePage() {
             <div
               className="absolute inset-0 rounded-full animate-pulse-glow"
               style={{
-                background: 'radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%)',
+                background: `radial-gradient(circle, hsl(var(--accent) / 0.3) 0%, transparent 70%)`,
                 filter: 'blur(20px)',
               }}
             />
             <Loader2 
               className="w-16 h-16 animate-spin relative z-10"
               style={{
-                color: '#00d4ff',
-                filter: 'drop-shadow(0 0 10px rgba(0, 212, 255, 0.8)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.5))',
+                color: 'hsl(var(--accent))',
+                filter: `drop-shadow(0 0 10px hsl(var(--accent) / 0.8)) drop-shadow(0 0 20px hsl(var(--primary) / 0.5))`,
               }}
             />
           </div>
@@ -201,12 +365,12 @@ export default function MaintenancePage() {
           <h1
             className="text-5xl md:text-7xl font-extrabold leading-tight"
             style={{
-              background: 'linear-gradient(135deg, #00d4ff 0%, #ff006e 50%, #a855f7 100%)',
+              background: `linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--secondary)) 50%, hsl(var(--primary)) 100%)`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              textShadow: '0 0 40px rgba(0, 212, 255, 0.3)',
-              filter: 'drop-shadow(0 0 20px rgba(168, 85, 247, 0.4))',
+              textShadow: `0 0 40px hsl(var(--accent) / 0.3)`,
+              filter: `drop-shadow(0 0 20px hsl(var(--primary) / 0.4))`,
             }}
             data-testid="headline"
           >
@@ -217,8 +381,8 @@ export default function MaintenancePage() {
           <p
             className="text-xl md:text-2xl font-light tracking-wide"
             style={{
-              color: '#cbd5e1',
-              textShadow: '0 0 20px rgba(203, 213, 225, 0.3)',
+              color: 'hsl(var(--foreground) / 0.8)',
+              textShadow: `0 0 20px hsl(var(--foreground) / 0.2)`,
             }}
             data-testid="subtext"
           >
@@ -231,15 +395,15 @@ export default function MaintenancePage() {
               <Clock 
                 className="w-5 h-5"
                 style={{
-                  color: '#00d4ff',
-                  filter: 'drop-shadow(0 0 8px rgba(0, 212, 255, 0.6))',
+                  color: 'hsl(var(--accent))',
+                  filter: `drop-shadow(0 0 8px hsl(var(--accent) / 0.6))`,
                 }}
               />
               <span
                 className="text-xs md:text-sm font-medium tracking-widest uppercase"
                 style={{
-                  color: '#94a3b8',
-                  textShadow: '0 0 10px rgba(148, 163, 184, 0.5)',
+                  color: 'hsl(var(--muted-foreground))',
+                  textShadow: `0 0 10px hsl(var(--muted-foreground) / 0.5)`,
                 }}
               >
                 Estimated Time Remaining
@@ -251,19 +415,19 @@ export default function MaintenancePage() {
               <div 
                 className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
                 style={{
-                  background: 'rgba(0, 212, 255, 0.05)',
-                  border: '1px solid rgba(0, 212, 255, 0.2)',
-                  boxShadow: '0 0 20px rgba(0, 212, 255, 0.1), inset 0 0 20px rgba(0, 212, 255, 0.05)',
+                  background: `hsl(var(--accent) / 0.05)`,
+                  border: `1px solid hsl(var(--accent) / 0.2)`,
+                  boxShadow: `0 0 20px hsl(var(--accent) / 0.1), inset 0 0 20px hsl(var(--accent) / 0.05)`,
                 }}
               >
                 <span
                   className="text-3xl md:text-5xl font-bold tabular-nums"
                   style={{
-                    background: 'linear-gradient(135deg, #00d4ff 0%, #a855f7 100%)',
+                    background: `linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    filter: 'drop-shadow(0 0 10px rgba(0, 212, 255, 0.5))',
+                    filter: `drop-shadow(0 0 10px hsl(var(--accent) / 0.5))`,
                   }}
                   data-testid="countdown-hours"
                 >
@@ -272,7 +436,7 @@ export default function MaintenancePage() {
                 <span
                   className="text-xs md:text-sm font-light mt-1"
                   style={{
-                    color: '#94a3b8',
+                    color: 'hsl(var(--muted-foreground))',
                   }}
                 >
                   Hours
@@ -283,8 +447,8 @@ export default function MaintenancePage() {
               <span
                 className="text-2xl md:text-4xl font-bold"
                 style={{
-                  color: '#ff006e',
-                  filter: 'drop-shadow(0 0 10px rgba(255, 0, 110, 0.5))',
+                  color: 'hsl(var(--secondary))',
+                  filter: `drop-shadow(0 0 10px hsl(var(--secondary) / 0.5))`,
                 }}
               >
                 :
@@ -294,19 +458,19 @@ export default function MaintenancePage() {
               <div 
                 className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
                 style={{
-                  background: 'rgba(255, 0, 110, 0.05)',
-                  border: '1px solid rgba(255, 0, 110, 0.2)',
-                  boxShadow: '0 0 20px rgba(255, 0, 110, 0.1), inset 0 0 20px rgba(255, 0, 110, 0.05)',
+                  background: `hsl(var(--secondary) / 0.05)`,
+                  border: `1px solid hsl(var(--secondary) / 0.2)`,
+                  boxShadow: `0 0 20px hsl(var(--secondary) / 0.1), inset 0 0 20px hsl(var(--secondary) / 0.05)`,
                 }}
               >
                 <span
                   className="text-3xl md:text-5xl font-bold tabular-nums"
                   style={{
-                    background: 'linear-gradient(135deg, #ff006e 0%, #a855f7 100%)',
+                    background: `linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--primary)) 100%)`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    filter: 'drop-shadow(0 0 10px rgba(255, 0, 110, 0.5))',
+                    filter: `drop-shadow(0 0 10px hsl(var(--secondary) / 0.5))`,
                   }}
                   data-testid="countdown-minutes"
                 >
@@ -315,7 +479,7 @@ export default function MaintenancePage() {
                 <span
                   className="text-xs md:text-sm font-light mt-1"
                   style={{
-                    color: '#94a3b8',
+                    color: 'hsl(var(--muted-foreground))',
                   }}
                 >
                   Minutes
@@ -326,8 +490,8 @@ export default function MaintenancePage() {
               <span
                 className="text-2xl md:text-4xl font-bold"
                 style={{
-                  color: '#a855f7',
-                  filter: 'drop-shadow(0 0 10px rgba(168, 85, 247, 0.5))',
+                  color: 'hsl(var(--primary))',
+                  filter: `drop-shadow(0 0 10px hsl(var(--primary) / 0.5))`,
                 }}
               >
                 :
@@ -337,19 +501,19 @@ export default function MaintenancePage() {
               <div 
                 className="flex flex-col items-center px-4 py-3 md:px-6 md:py-4 rounded-2xl"
                 style={{
-                  background: 'rgba(168, 85, 247, 0.05)',
-                  border: '1px solid rgba(168, 85, 247, 0.2)',
-                  boxShadow: '0 0 20px rgba(168, 85, 247, 0.1), inset 0 0 20px rgba(168, 85, 247, 0.05)',
+                  background: `hsl(var(--primary) / 0.05)`,
+                  border: `1px solid hsl(var(--primary) / 0.2)`,
+                  boxShadow: `0 0 20px hsl(var(--primary) / 0.1), inset 0 0 20px hsl(var(--primary) / 0.05)`,
                 }}
               >
                 <span
                   className="text-3xl md:text-5xl font-bold tabular-nums"
                   style={{
-                    background: 'linear-gradient(135deg, #a855f7 0%, #00d4ff 100%)',
+                    background: `linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    filter: 'drop-shadow(0 0 10px rgba(168, 85, 247, 0.5))',
+                    filter: `drop-shadow(0 0 10px hsl(var(--primary) / 0.5))`,
                   }}
                   data-testid="countdown-seconds"
                 >
@@ -358,7 +522,7 @@ export default function MaintenancePage() {
                 <span
                   className="text-xs md:text-sm font-light mt-1"
                   style={{
-                    color: '#94a3b8',
+                    color: 'hsl(var(--muted-foreground))',
                   }}
                 >
                   Seconds
@@ -371,7 +535,7 @@ export default function MaintenancePage() {
           <p
             className="text-sm md:text-base font-light opacity-70"
             style={{
-              color: '#94a3b8',
+              color: 'hsl(var(--muted-foreground))',
             }}
             data-testid="status-text"
           >
@@ -385,15 +549,15 @@ export default function MaintenancePage() {
                 <Mail 
                   className="w-5 h-5"
                   style={{
-                    color: '#ff006e',
-                    filter: 'drop-shadow(0 0 8px rgba(255, 0, 110, 0.6))',
+                    color: 'hsl(var(--secondary))',
+                    filter: 'drop-shadow(0 0 8px hsl(var(--secondary) / 0.6))',
                   }}
                 />
                 <span
                   className="text-xs md:text-sm font-medium tracking-widest uppercase"
                   style={{
-                    color: '#94a3b8',
-                    textShadow: '0 0 10px rgba(148, 163, 184, 0.5)',
+                    color: 'hsl(var(--muted-foreground))',
+                    textShadow: '0 0 10px hsl(var(--muted-foreground) / 0.5)',
                   }}
                 >
                   Get Notified When We're Back
@@ -412,25 +576,25 @@ export default function MaintenancePage() {
                       disabled={isSubmitting || submitStatus === "success"}
                       className="w-full px-4 py-3 md:px-6 md:py-4 rounded-2xl text-base md:text-lg font-light outline-none transition-all duration-300"
                       style={{
-                        background: 'rgba(15, 23, 42, 0.6)',
+                        background: 'hsl(var(--background) / 0.6)',
                         border: submitStatus === "error" 
-                          ? '2px solid rgba(255, 0, 110, 0.5)' 
-                          : '2px solid rgba(168, 85, 247, 0.3)',
-                        color: '#cbd5e1',
+                          ? '2px solid hsl(var(--secondary) / 0.5)' 
+                          : '2px solid hsl(var(--primary) / 0.3)',
+                        color: 'hsl(var(--foreground) / 0.8)',
                         boxShadow: submitStatus === "error"
-                          ? '0 0 20px rgba(255, 0, 110, 0.2)'
-                          : '0 0 20px rgba(168, 85, 247, 0.1)',
+                          ? '0 0 20px hsl(var(--secondary) / 0.2)'
+                          : '0 0 20px hsl(var(--primary) / 0.1)',
                       }}
                       onFocus={(e) => {
                         if (submitStatus !== "error") {
-                          e.currentTarget.style.border = '2px solid rgba(0, 212, 255, 0.5)';
-                          e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 212, 255, 0.2)';
+                          e.currentTarget.style.border = '2px solid hsl(var(--accent) / 0.5)';
+                          e.currentTarget.style.boxShadow = '0 0 30px hsl(var(--accent) / 0.2)';
                         }
                       }}
                       onBlur={(e) => {
                         if (submitStatus !== "error") {
-                          e.currentTarget.style.border = '2px solid rgba(168, 85, 247, 0.3)';
-                          e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.1)';
+                          e.currentTarget.style.border = '2px solid hsl(var(--primary) / 0.3)';
+                          e.currentTarget.style.boxShadow = '0 0 20px hsl(var(--primary) / 0.1)';
                         }
                       }}
                       data-testid="email-input"
@@ -440,7 +604,7 @@ export default function MaintenancePage() {
                         <Loader2 
                           className="w-5 h-5 animate-spin"
                           style={{
-                            color: '#00d4ff',
+                            color: 'hsl(var(--accent))',
                           }}
                         />
                       </div>
@@ -451,22 +615,22 @@ export default function MaintenancePage() {
                     <div 
                       className="flex items-center gap-2 px-4 py-3 rounded-xl animate-fade-in"
                       style={{
-                        background: 'rgba(0, 212, 255, 0.1)',
-                        border: '1px solid rgba(0, 212, 255, 0.3)',
+                        background: 'hsl(var(--accent) / 0.1)',
+                        border: '1px solid hsl(var(--accent) / 0.3)',
                       }}
                       data-testid="success-message"
                     >
                       <Check 
                         className="w-5 h-5 flex-shrink-0"
                         style={{
-                          color: '#00d4ff',
-                          filter: 'drop-shadow(0 0 8px rgba(0, 212, 255, 0.8))',
+                          color: 'hsl(var(--accent))',
+                          filter: 'drop-shadow(0 0 8px hsl(var(--accent) / 0.8))',
                         }}
                       />
                       <span
                         className="text-sm font-light"
                         style={{
-                          color: '#cbd5e1',
+                          color: 'hsl(var(--foreground) / 0.8)',
                         }}
                       >
                         You're subscribed! We'll notify you when we're back online.
@@ -478,22 +642,22 @@ export default function MaintenancePage() {
                     <div 
                       className="flex items-center gap-2 px-4 py-3 rounded-xl animate-fade-in"
                       style={{
-                        background: 'rgba(255, 0, 110, 0.1)',
-                        border: '1px solid rgba(255, 0, 110, 0.3)',
+                        background: 'hsl(var(--secondary) / 0.1)',
+                        border: '1px solid hsl(var(--secondary) / 0.3)',
                       }}
                       data-testid="error-message"
                     >
                       <AlertCircle 
                         className="w-5 h-5 flex-shrink-0"
                         style={{
-                          color: '#ff006e',
-                          filter: 'drop-shadow(0 0 8px rgba(255, 0, 110, 0.8))',
+                          color: 'hsl(var(--secondary))',
+                          filter: 'drop-shadow(0 0 8px hsl(var(--secondary) / 0.8))',
                         }}
                       />
                       <span
                         className="text-sm font-light"
                         style={{
-                          color: '#cbd5e1',
+                          color: 'hsl(var(--foreground) / 0.8)',
                         }}
                       >
                         {errorMessage}
@@ -507,19 +671,19 @@ export default function MaintenancePage() {
                       disabled={isSubmitting}
                       className="w-full px-6 py-3 md:py-4 rounded-2xl text-base md:text-lg font-semibold transition-all duration-300"
                       style={{
-                        background: 'linear-gradient(135deg, #00d4ff 0%, #a855f7 100%)',
-                        color: '#0a0f1a',
-                        boxShadow: '0 0 30px rgba(0, 212, 255, 0.3)',
+                        background: 'linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)',
+                        color: 'hsl(var(--background))',
+                        boxShadow: '0 0 30px hsl(var(--accent) / 0.3)',
                         opacity: isSubmitting ? 0.6 : 1,
                       }}
                       onMouseEnter={(e) => {
                         if (!isSubmitting) {
-                          e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 212, 255, 0.5)';
+                          e.currentTarget.style.boxShadow = '0 0 40px hsl(var(--accent) / 0.5)';
                           e.currentTarget.style.transform = 'scale(1.02)';
                         }
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 212, 255, 0.3)';
+                        e.currentTarget.style.boxShadow = '0 0 30px hsl(var(--accent) / 0.3)';
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                       data-testid="subscribe-button"
@@ -537,7 +701,7 @@ export default function MaintenancePage() {
             <span
               className="text-xs md:text-sm font-medium tracking-widest uppercase"
               style={{
-                color: '#64748b',
+                color: 'hsl(var(--muted-foreground))',
               }}
             >
               Stay Connected
@@ -553,23 +717,23 @@ export default function MaintenancePage() {
                 <div
                   className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{
-                    background: 'radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, hsl(var(--accent) / 0.3) 0%, transparent 70%)',
                     filter: 'blur(15px)',
                   }}
                 />
                 <SiGithub
                   className="w-7 h-7 md:w-8 md:h-8 relative z-10 transition-all duration-300"
                   style={{
-                    color: '#94a3b8',
+                    color: 'hsl(var(--muted-foreground))',
                     filter: 'drop-shadow(0 0 0px transparent)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#00d4ff';
-                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px rgba(0, 212, 255, 0.8))';
+                    e.currentTarget.style.color = 'hsl(var(--accent))';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px hsl(var(--accent) / 0.8))';
                     e.currentTarget.style.transform = 'scale(1.15)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.color = 'hsl(var(--muted-foreground))';
                     e.currentTarget.style.filter = 'drop-shadow(0 0 0px transparent)';
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
@@ -586,23 +750,23 @@ export default function MaintenancePage() {
                 <div
                   className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{
-                    background: 'radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, hsl(var(--primary) / 0.3) 0%, transparent 70%)',
                     filter: 'blur(15px)',
                   }}
                 />
                 <SiDiscord
                   className="w-7 h-7 md:w-8 md:h-8 relative z-10 transition-all duration-300"
                   style={{
-                    color: '#94a3b8',
+                    color: 'hsl(var(--muted-foreground))',
                     filter: 'drop-shadow(0 0 0px transparent)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#a855f7';
-                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.8))';
+                    e.currentTarget.style.color = 'hsl(var(--primary))';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px hsl(var(--primary) / 0.8))';
                     e.currentTarget.style.transform = 'scale(1.15)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.color = 'hsl(var(--muted-foreground))';
                     e.currentTarget.style.filter = 'drop-shadow(0 0 0px transparent)';
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
@@ -619,23 +783,23 @@ export default function MaintenancePage() {
                 <div
                   className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{
-                    background: 'radial-gradient(circle, rgba(255, 0, 110, 0.3) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, hsl(var(--secondary) / 0.3) 0%, transparent 70%)',
                     filter: 'blur(15px)',
                   }}
                 />
                 <SiX
                   className="w-7 h-7 md:w-8 md:h-8 relative z-10 transition-all duration-300"
                   style={{
-                    color: '#94a3b8',
+                    color: 'hsl(var(--muted-foreground))',
                     filter: 'drop-shadow(0 0 0px transparent)',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = '#ff006e';
-                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px rgba(255, 0, 110, 0.8))';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px hsl(var(--secondary) / 0.8))';
                     e.currentTarget.style.transform = 'scale(1.15)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.color = 'hsl(var(--muted-foreground))';
                     e.currentTarget.style.filter = 'drop-shadow(0 0 0px transparent)';
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
@@ -652,9 +816,9 @@ export default function MaintenancePage() {
         style={{
           width: '600px',
           height: '600px',
-          border: '1px solid rgba(168, 85, 247, 0.1)',
+          border: '1px solid hsl(var(--primary) / 0.1)',
           borderRadius: '50%',
-          boxShadow: '0 0 60px rgba(168, 85, 247, 0.1)',
+          boxShadow: '0 0 60px hsl(var(--primary) / 0.1)',
         }}
       />
     </div>

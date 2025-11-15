@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack web application built with React, TypeScript, Express, and Drizzle ORM. The application currently displays a cyberpunk-themed maintenance page with futuristic visual effects and animations. It's designed as a modern single-page application with a minimalist user authentication schema ready for expansion.
+This is a full-stack web application built with React, TypeScript, Express, and Drizzle ORM. The application displays a cyberpunk-themed maintenance page with futuristic visual effects, animations, and multiple theme variants. It's designed as a modern single-page application with email notification signup and a comprehensive theme system featuring 4 distinct cyberpunk color palettes.
 
 The tech stack includes:
 - **Frontend**: React with TypeScript, Vite build tool, TailwindCSS for styling
@@ -14,6 +14,16 @@ The tech stack includes:
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Recent Changes
+
+**November 15, 2025**
+- Implemented comprehensive theme variant system with 4 cyberpunk color schemes
+- Added theme switcher UI with click-outside functionality and localStorage persistence
+- Replaced all hard-coded colors with CSS variables for dynamic theming
+- All UI elements (countdown timer, headline, particles, forms, buttons) now respond to active theme
+- Theme variants: Default (Purple/Blue), Matrix (Green/Lime), Vaporwave (Pink/Cyan), Sunset (Orange/Red)
+- Email notification signup with PostgreSQL persistence and duplicate detection
 
 ## System Architecture
 
