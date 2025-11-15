@@ -331,6 +331,23 @@
     }
   }
 
+  @keyframes drift-down {
+    0% {
+      transform: translateY(-100px) translateX(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.6;
+    }
+    90% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(100vh) translateX(20px);
+      opacity: 0;
+    }
+  }
+
   @keyframes rotate-slow {
     from {
       transform: rotate(0deg);
@@ -365,6 +382,10 @@
 
   .animate-drift-up {
     animation: drift-up linear infinite;
+  }
+
+  .animate-drift-down {
+    animation: drift-down linear infinite;
   }
 
   .animate-rotate-slow {

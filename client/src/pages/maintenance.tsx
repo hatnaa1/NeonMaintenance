@@ -1,7 +1,6 @@
-import { Loader2, Clock, Mail, Check, AlertCircle, Palette } from "lucide-react";
+import { Clock, Palette } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { SiGithub, SiDiscord, SiX } from "react-icons/si";
-import { apiRequest } from "@/lib/queryClient";
 
 type ThemeName = "default" | "matrix" | "vaporwave" | "sunset";
 
@@ -55,7 +54,7 @@ const themes: Theme[] = [
 ];
 
 export default function MaintenancePage() {
-  const particles = Array.from({ length: 20 }, (_, i) => ({
+  const particles = Array.from({ length: 60 }, (_, i) => ({
     id: i,
     size: Math.random() * 4 + 2,
     left: Math.random() * 100,
@@ -72,10 +71,6 @@ export default function MaintenancePage() {
     seconds: 0,
   });
 
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState("");
   const [currentTheme, setCurrentTheme] = useState<ThemeName>("default");
   const [showThemePicker, setShowThemePicker] = useState(false);
   const themePickerRef = useRef<HTMLDivElement>(null);
@@ -138,38 +133,6 @@ export default function MaintenancePage() {
 
     return () => clearInterval(interval);
   }, []);
-
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
-    setErrorMessage("");
-
-    try {
-      const response = await apiRequest("POST", "/api/subscribe", { email });
-      const data = await response.json();
-      
-      if (data.success) {
-        setSubmitStatus("success");
-        setEmail("");
-      } else {
-        setSubmitStatus("error");
-        setErrorMessage(data.message || "Failed to subscribe. Please try again.");
-      }
-    } catch (error: any) {
-      setSubmitStatus("error");
-      const errorText = error.message || "Failed to subscribe. Please try again.";
-      if (errorText.includes("409")) {
-        setErrorMessage("This email address is already registered for notifications.");
-      } else if (errorText.includes("400")) {
-        setErrorMessage("Please enter a valid email address.");
-      } else {
-        setErrorMessage(errorText);
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <div 
@@ -247,7 +210,7 @@ export default function MaintenancePage() {
                   {theme.label}
                 </span>
                 {currentTheme === theme.name && (
-                  <Check className="w-4 h-4 ml-auto" style={{ color: 'hsl(var(--primary))' }} />
+                  <span className="ml-auto text-lg" style={{ color: 'hsl(var(--primary))' }}>✓</span>
                 )}
               </button>
             ))}
@@ -259,7 +222,7 @@ export default function MaintenancePage() {
       {particles.map((particle) => (
         <div
           key={particle.id}
-          className="absolute rounded-full animate-drift-up"
+          className="absolute rounded-full animate-drift-down"
           style={{
             width: `${particle.size}px`,
             height: `${particle.size}px`,
@@ -340,27 +303,6 @@ export default function MaintenancePage() {
         data-testid="glassmorphism-card"
       >
         <div className="flex flex-col items-center gap-8 md:gap-12 text-center">
-          {/* Animated Progress Indicator */}
-          <div 
-            className="relative"
-            data-testid="progress-indicator"
-          >
-            <div
-              className="absolute inset-0 rounded-full animate-pulse-glow"
-              style={{
-                background: `radial-gradient(circle, hsl(var(--accent) / 0.3) 0%, transparent 70%)`,
-                filter: 'blur(20px)',
-              }}
-            />
-            <Loader2 
-              className="w-16 h-16 animate-spin relative z-10"
-              style={{
-                color: 'hsl(var(--accent))',
-                filter: `drop-shadow(0 0 10px hsl(var(--accent) / 0.8)) drop-shadow(0 0 20px hsl(var(--primary) / 0.5))`,
-              }}
-            />
-          </div>
-
           {/* Bold Neon Gradient Headline */}
           <h1
             className="text-5xl md:text-7xl font-extrabold leading-tight"
@@ -542,160 +484,6 @@ export default function MaintenancePage() {
             Our team is working hard to bring you an improved experience
           </p>
 
-          {/* Email Notification Signup Form */}
-          <div className="w-full max-w-md mt-8" data-testid="email-signup">
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Mail 
-                  className="w-5 h-5"
-                  style={{
-                    color: 'hsl(var(--secondary))',
-                    filter: 'drop-shadow(0 0 8px hsl(var(--secondary) / 0.6))',
-                  }}
-                />
-                <span
-                  className="text-xs md:text-sm font-medium tracking-widest uppercase"
-                  style={{
-                    color: 'hsl(var(--muted-foreground))',
-                    textShadow: '0 0 10px hsl(var(--muted-foreground) / 0.5)',
-                  }}
-                >
-                  Get Notified When We're Back
-                </span>
-              </div>
-
-              <form onSubmit={handleEmailSubmit} className="w-full">
-                <div className="flex flex-col gap-3">
-                  <div className="relative">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
-                      required
-                      disabled={isSubmitting || submitStatus === "success"}
-                      className="w-full px-4 py-3 md:px-6 md:py-4 rounded-2xl text-base md:text-lg font-light outline-none transition-all duration-300"
-                      style={{
-                        background: 'hsl(var(--background) / 0.6)',
-                        border: submitStatus === "error" 
-                          ? '2px solid hsl(var(--secondary) / 0.5)' 
-                          : '2px solid hsl(var(--primary) / 0.3)',
-                        color: 'hsl(var(--foreground) / 0.8)',
-                        boxShadow: submitStatus === "error"
-                          ? '0 0 20px hsl(var(--secondary) / 0.2)'
-                          : '0 0 20px hsl(var(--primary) / 0.1)',
-                      }}
-                      onFocus={(e) => {
-                        if (submitStatus !== "error") {
-                          e.currentTarget.style.border = '2px solid hsl(var(--accent) / 0.5)';
-                          e.currentTarget.style.boxShadow = '0 0 30px hsl(var(--accent) / 0.2)';
-                        }
-                      }}
-                      onBlur={(e) => {
-                        if (submitStatus !== "error") {
-                          e.currentTarget.style.border = '2px solid hsl(var(--primary) / 0.3)';
-                          e.currentTarget.style.boxShadow = '0 0 20px hsl(var(--primary) / 0.1)';
-                        }
-                      }}
-                      data-testid="email-input"
-                    />
-                    {isSubmitting && (
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                        <Loader2 
-                          className="w-5 h-5 animate-spin"
-                          style={{
-                            color: 'hsl(var(--accent))',
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {submitStatus === "success" && (
-                    <div 
-                      className="flex items-center gap-2 px-4 py-3 rounded-xl animate-fade-in"
-                      style={{
-                        background: 'hsl(var(--accent) / 0.1)',
-                        border: '1px solid hsl(var(--accent) / 0.3)',
-                      }}
-                      data-testid="success-message"
-                    >
-                      <Check 
-                        className="w-5 h-5 flex-shrink-0"
-                        style={{
-                          color: 'hsl(var(--accent))',
-                          filter: 'drop-shadow(0 0 8px hsl(var(--accent) / 0.8))',
-                        }}
-                      />
-                      <span
-                        className="text-sm font-light"
-                        style={{
-                          color: 'hsl(var(--foreground) / 0.8)',
-                        }}
-                      >
-                        You're subscribed! We'll notify you when we're back online.
-                      </span>
-                    </div>
-                  )}
-
-                  {submitStatus === "error" && (
-                    <div 
-                      className="flex items-center gap-2 px-4 py-3 rounded-xl animate-fade-in"
-                      style={{
-                        background: 'hsl(var(--secondary) / 0.1)',
-                        border: '1px solid hsl(var(--secondary) / 0.3)',
-                      }}
-                      data-testid="error-message"
-                    >
-                      <AlertCircle 
-                        className="w-5 h-5 flex-shrink-0"
-                        style={{
-                          color: 'hsl(var(--secondary))',
-                          filter: 'drop-shadow(0 0 8px hsl(var(--secondary) / 0.8))',
-                        }}
-                      />
-                      <span
-                        className="text-sm font-light"
-                        style={{
-                          color: 'hsl(var(--foreground) / 0.8)',
-                        }}
-                      >
-                        {errorMessage}
-                      </span>
-                    </div>
-                  )}
-
-                  {submitStatus !== "success" && (
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full px-6 py-3 md:py-4 rounded-2xl text-base md:text-lg font-semibold transition-all duration-300"
-                      style={{
-                        background: 'linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)',
-                        color: 'hsl(var(--background))',
-                        boxShadow: '0 0 30px hsl(var(--accent) / 0.3)',
-                        opacity: isSubmitting ? 0.6 : 1,
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isSubmitting) {
-                          e.currentTarget.style.boxShadow = '0 0 40px hsl(var(--accent) / 0.5)';
-                          e.currentTarget.style.transform = 'scale(1.02)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 0 30px hsl(var(--accent) / 0.3)';
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                      data-testid="subscribe-button"
-                    >
-                      {isSubmitting ? "Subscribing..." : "Notify Me"}
-                    </button>
-                  )}
-                </div>
-              </form>
-            </div>
-          </div>
-
           {/* Social Media Links */}
           <div className="flex flex-col items-center gap-4 mt-8" data-testid="social-links">
             <span
@@ -810,17 +598,6 @@ export default function MaintenancePage() {
         </div>
       </div>
 
-      {/* Rotating Ring Decoration */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none animate-rotate-slow"
-        style={{
-          width: '600px',
-          height: '600px',
-          border: '1px solid hsl(var(--primary) / 0.1)',
-          borderRadius: '50%',
-          boxShadow: '0 0 60px hsl(var(--primary) / 0.1)',
-        }}
-      />
     </div>
   );
 }
