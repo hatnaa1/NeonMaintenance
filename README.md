@@ -10,3 +10,11 @@ A stunning cyberpunk-themed maintenance page featuring 80 animated starfall part
 - 💾 **Theme Persistence** - Your theme choice saved in localStorage
 - 📱 **Fully Responsive** - Works perfectly on all devices
 - ⚡ **Built with Modern Stack** - React 18, TypeScript, TailwindCSS, Vite
+
+## 🛠️ Tech Stack
+- **Frontend**: React 18 with TypeScript
+- **Styling**: TailwindCSS with custom cyberpunk theme
+- **Build Tool**: Vite
+- **UI Components**: Radix UI primitives
+- **Icons**: Lucide React
+- **Animations**: CSS keyframes with optimized performance
