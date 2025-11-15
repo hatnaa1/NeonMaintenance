@@ -333,17 +333,17 @@
 
   @keyframes drift-down {
     0% {
-      transform: translateY(-100px) translateX(0);
+      transform: translateY(-120px) translateX(0) rotate(0deg);
       opacity: 0;
     }
-    10% {
-      opacity: 0.6;
+    5% {
+      opacity: 1;
     }
-    90% {
-      opacity: 0.6;
+    95% {
+      opacity: 0.8;
     }
     100% {
-      transform: translateY(100vh) translateX(20px);
+      transform: translateY(calc(100vh + 120px)) translateX(15px) rotate(2deg);
       opacity: 0;
     }
   }

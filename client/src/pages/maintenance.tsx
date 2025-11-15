@@ -54,12 +54,15 @@ const themes: Theme[] = [
 ];
 
 export default function MaintenancePage() {
-  const particles = Array.from({ length: 60 }, (_, i) => ({
+  const particles = Array.from({ length: 80 }, (_, i) => ({
     id: i,
-    size: Math.random() * 4 + 2,
-    left: Math.random() * 100,
-    delay: Math.random() * 20,
-    duration: Math.random() * 10 + 15,
+    width: Math.random() * 2 + 1,
+    height: Math.random() * 80 + 40,
+    left: Math.random() * 110 - 5,
+    delay: Math.random() * 8,
+    duration: Math.random() * 1.5 + 2.5,
+    opacity: Math.random() * 0.4 + 0.4,
+    colorIndex: Math.floor(Math.random() * 3),
   }));
 
   const [currentTheme, setCurrentTheme] = useState<ThemeName>("default");
@@ -105,7 +108,7 @@ export default function MaintenancePage() {
     <div 
       className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
       style={{ 
-        background: `linear-gradient(to bottom, hsl(var(--background) / 0.95) 0%, hsl(var(--card) / 0.9) 50%, hsl(var(--background) / 0.95) 100%)`,
+        background: 'linear-gradient(180deg, #1a0033 0%, #2d1b4e 40%, #5e2563 100%)',
         fontFamily: 'Space Grotesk, sans-serif'
       }}
       data-testid="maintenance-page"
@@ -185,22 +188,35 @@ export default function MaintenancePage() {
         </div>
       )}
 
-      {/* Animated Background Particles */}
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className="absolute rounded-full animate-drift-down"
-          style={{
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            left: `${particle.left}%`,
-            background: `radial-gradient(circle, hsl(var(--accent) / 0.8) 0%, hsl(var(--primary) / 0.4) 50%, transparent 70%)`,
-            boxShadow: `0 0 10px hsl(var(--accent) / 0.5)`,
-            animationDelay: `${particle.delay}s`,
-            animationDuration: `${particle.duration}s`,
-          }}
-        />
-      ))}
+      {/* Animated Starfall Particles */}
+      {particles.map((particle) => {
+        const colors = [
+          'hsl(var(--accent))',
+          'hsl(var(--primary))',
+          'hsl(var(--secondary))',
+        ];
+        const particleColor = colors[particle.colorIndex];
+        
+        return (
+          <div
+            key={particle.id}
+            className="absolute animate-drift-down"
+            style={{
+              width: `${particle.width}px`,
+              height: `${particle.height}px`,
+              left: `${particle.left}%`,
+              top: 0,
+              background: `linear-gradient(to bottom, ${particleColor} 0%, transparent 100%)`,
+              boxShadow: `0 0 ${particle.height / 4}px ${particleColor}, 0 0 ${particle.height / 2}px ${particleColor}`,
+              opacity: particle.opacity,
+              borderRadius: `${particle.width}px`,
+              filter: 'blur(0.5px)',
+              animationDelay: `${particle.delay}s`,
+              animationDuration: `${particle.duration}s`,
+            }}
+          />
+        );
+      })}
 
       {/* Geometric Background Shapes */}
       <div className="absolute inset-0 pointer-events-none">
