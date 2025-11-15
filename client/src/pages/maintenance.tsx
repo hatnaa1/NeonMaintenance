@@ -59,8 +59,8 @@ export default function MaintenancePage() {
     width: Math.random() * 2 + 1,
     height: Math.random() * 80 + 40,
     left: Math.random() * 110 - 5,
-    delay: Math.random() * 8,
-    duration: Math.random() * 1.5 + 2.5,
+    delay: Math.random() * 20,
+    duration: Math.random() * 2 + 3,
     opacity: Math.random() * 0.4 + 0.4,
     colorIndex: Math.floor(Math.random() * 3),
   }));
@@ -208,11 +208,12 @@ export default function MaintenancePage() {
               top: 0,
               background: `linear-gradient(to bottom, ${particleColor} 0%, transparent 100%)`,
               boxShadow: `0 0 ${particle.height / 4}px ${particleColor}, 0 0 ${particle.height / 2}px ${particleColor}`,
-              opacity: particle.opacity,
+              opacity: 0,
               borderRadius: `${particle.width}px`,
               filter: 'blur(0.5px)',
               animationDelay: `${particle.delay}s`,
               animationDuration: `${particle.duration}s`,
+              animationFillMode: 'both',
             }}
           />
         );
