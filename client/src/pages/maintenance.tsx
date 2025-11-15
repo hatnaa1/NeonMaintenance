@@ -1,6 +1,6 @@
 import { Palette } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { SiGithub, SiDiscord, SiX } from "react-icons/si";
+import { SiGithub, SiDiscord, SiX, SiFacebook } from "react-icons/si";
 
 type ThemeName = "default" | "matrix" | "vaporwave" | "sunset";
 
@@ -460,6 +460,39 @@ export default function MaintenancePage() {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = '#ff006e';
                     e.currentTarget.style.filter = 'drop-shadow(0 0 15px hsl(var(--secondary) / 0.8))';
+                    e.currentTarget.style.transform = 'scale(1.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'hsl(var(--muted-foreground))';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 0px transparent)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                />
+              </a>
+
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative"
+                data-testid="social-link-facebook"
+              >
+                <div
+                  className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    background: 'radial-gradient(circle, hsl(var(--accent) / 0.3) 0%, transparent 70%)',
+                    filter: 'blur(15px)',
+                  }}
+                />
+                <SiFacebook
+                  className="w-7 h-7 md:w-8 md:h-8 relative z-10 transition-all duration-300"
+                  style={{
+                    color: 'hsl(var(--muted-foreground))',
+                    filter: 'drop-shadow(0 0 0px transparent)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'hsl(var(--accent))';
+                    e.currentTarget.style.filter = 'drop-shadow(0 0 15px hsl(var(--accent) / 0.8))';
                     e.currentTarget.style.transform = 'scale(1.15)';
                   }}
                   onMouseLeave={(e) => {
